@@ -4,8 +4,9 @@ import BookController from '../controller/bookController';
 const router = Router();
 
 router.get('/books', BookController.getAllBooks);
+router.get('/books/:id', BookController.getBookById);
 router.post('/books', BookController.createBook);
-// router.put('/books/:id', updateBook);
-// router.delete('/books/:id', deleteBook);
+router.put('/books/:id', BookController.updateBook);
+router.delete('/books/:id', BookController.deleteBook);
 
 export default router;

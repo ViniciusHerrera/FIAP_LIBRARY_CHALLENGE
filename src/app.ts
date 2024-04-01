@@ -10,7 +10,7 @@ const HOSTNAME = process.env.HOSTNAME || 'http://localhost';
 const app = express();
 
 app.use(express.json());
-app.use(bookRouter);
+app.use('/api', bookRouter);
 app.use(cors());
 
 app.use((req, res) => {
