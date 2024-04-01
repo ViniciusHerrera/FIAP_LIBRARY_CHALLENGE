@@ -1,24 +1,38 @@
 // src/controllers/bookController.ts
+import AppDataSource from '../database/connection';
 import { Request, Response } from 'express';
-import { Book } from '../models/bookModel';
+import Book from '../models/bookModel';
+import BookView from '../views/bookView';
 
-export const getAllBooks = async (req: Request, res: Response) => {
-  try {
-    const books = await Book.find();
-    res.json(books);
-  } catch (err: any) {
-    res.status(500).json({ message: err.message });
-  }
-};
+class BookController {
+  static async getAllBooks(req: Request, res: Response) {
+    try {
+      const bookRepository = AppDataSource.getRepository(Book);
 
-export const createBook = async (req: Request, res: Response) => {
-  const { title, author, isbn, yearOfPublication } = req.body;
-  try {
-    const book = await Book.create({ title, author, isbn, yearOfPublication }).save();
-    res.status(201).json(book);
-  } catch (err: any) {
-    res.status(400).json({ message: err.message });
-  }
-};
+      const books = await bookRepository.find();
 
-// Implement updateBook, deleteBook controllers similarly
+      return res.json(BookView.renderMany(books));
+
+    } catch (err: any) {
+      return res.status(500).json({ message: err.message });
+    }
+  };
+
+  static async createBook(req: Request, res: Response) {
+    const { title, author, isbn, yearOfPublication } = req.body;
+
+    try {
+      const bookRepository = AppDataSource.getRepository(Book);
+
+      const book = await bookRepository.create({ title, author, isbn, yearOfPublication }).save();
+
+      return res.status(201).json(book);
+
+    } catch (err: any) {
+      return res.status(400).json({ message: err.message });
+    }
+  };
+
+}
+
+export default BookController;

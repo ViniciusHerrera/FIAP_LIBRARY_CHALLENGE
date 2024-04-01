@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
 
-@Entity('book')
-export class Book extends BaseEntity {
+@Entity('books')
+export default class Book extends BaseEntity {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
