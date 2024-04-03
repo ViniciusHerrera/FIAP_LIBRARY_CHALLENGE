@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, JoinColumn, ManyToOne } from "typeorm";
+import Publisher from "./publisherModel";
 
 @Entity('books')
 export default class Book extends BaseEntity {
@@ -16,4 +17,8 @@ export default class Book extends BaseEntity {
 
   @Column()
   yearOfPublication: number;
+
+  @ManyToOne(() => Publisher, publisher => publisher.books)
+  @JoinColumn({ name: 'publisher_id' })
+  publisher: Publisher;
 }

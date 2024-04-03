@@ -3,14 +3,7 @@ import { Request, Response } from 'express';
 import AppDataSource from '../database/connection';
 import Book from '../models/bookModel';
 import BookView from '../views/bookView';
-import * as Yup from 'yup';
-
-const schema = Yup.object().shape({
-  title: Yup.string().required('Titulo obrigatório'),
-  author: Yup.string().required('Autor Obrigatorio'),
-  isbn: Yup.string().required('Isbn é obrigatório').max(17, 'Tamanho máximo permitido para o isbn é 17 caracteres'),
-  yearOfPublication: Yup.number().required('Data de publicação é obrigatorio'),
-});
+import { bookSchema } from '../schemas/validators';
 
 class BookController {
   static async getAllBooks(req: Request, res: Response) {
@@ -42,16 +35,16 @@ class BookController {
     } catch (err: any) {
       return res.status(500).json({ message: err.message });
     }
-  }
+  };
 
   static async createBook(req: Request, res: Response) {
-    const { title, author, isbn, yearOfPublication } = req.body;
+    const { title, author, isbn, yearOfPublication, publisher } = req.body;
 
     try {
 
-      const data = { title, author, isbn, yearOfPublication }
+      const data = { title, author, isbn, yearOfPublication, publisher }
 
-      await schema.validate(data, {
+      await bookSchema.validate(data, {
         abortEarly: false,
       });
 
@@ -68,7 +61,7 @@ class BookController {
 
   static async updateBook(req: Request, res: Response) {
     const { id } = req.params;
-    const { title, author, isbn, yearOfPublication } = req.body;
+    const { title, author, isbn, yearOfPublication, publisher } = req.body;
 
     try {
       const bookRepository = AppDataSource.getRepository(Book);
@@ -79,9 +72,9 @@ class BookController {
         return res.status(404).json({ message: 'Livro não encontrado' });
       }
 
-      const data = { title, author, isbn, yearOfPublication };
+      const data = { title, author, isbn, yearOfPublication, publisher };
 
-      await schema.validate(data, {
+      await bookSchema.validate(data, {
         abortEarly: false,
       });
 
@@ -89,6 +82,7 @@ class BookController {
       book.author = author;
       book.isbn = isbn;
       book.yearOfPublication = yearOfPublication;
+      book.publisher = publisher;
 
       await bookRepository.save(book);
 
