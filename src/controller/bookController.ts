@@ -1,8 +1,10 @@
 // src/controllers/bookController.ts
 import { Request, Response } from 'express';
 import AppDataSource from '../database/connection';
+import Publisher from '../models/publisherModel';
 import Book from '../models/bookModel';
 import BookView from '../views/bookView';
+import PublisherController from './publisherController';
 import { bookSchema } from '../schemas/validators';
 
 class BookController {
@@ -48,6 +50,12 @@ class BookController {
         abortEarly: false,
       });
 
+      const publisherExists = await PublisherController.checkIfPublisherExists(publisher);
+
+      if (!publisherExists) {
+        return res.status(404).json({ message: 'Editora não encontrada' });
+      }
+
       const bookRepository = AppDataSource.getRepository(Book);
 
       const book = await bookRepository.create(data).save();
@@ -70,6 +78,12 @@ class BookController {
 
       if (!book) {
         return res.status(404).json({ message: 'Livro não encontrado' });
+      }
+
+      const publisherExists = await PublisherController.checkIfPublisherExists(publisher);
+
+      if (!publisherExists) {
+        return res.status(404).json({ message: 'Editora não encontrada' });
       }
 
       const data = { title, author, isbn, yearOfPublication, publisher };
@@ -111,6 +125,21 @@ class BookController {
       return res.status(500).json({ message: err.message });
     }
   };
+
+  static async publisherHasBooks(publisher: Publisher): Promise<boolean> {
+    try {
+      const bookRepository = AppDataSource.getRepository(Book);
+
+      const book = await bookRepository.findOneBy({ publisher: publisher });
+
+      return book ? true : false;
+
+    } catch (err: any) {
+      throw err;
+    }
+  };
+
+
 }
 
 export default BookController;

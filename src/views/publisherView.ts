@@ -2,11 +2,18 @@ import Publisher from "../models/publisherModel";
 import BookView from "./bookView";
 
 class PublisherView {
+  static renderOnly(publisher: Publisher) {
+    return {
+      id: publisher.id,
+      title: publisher.name,
+    };
+  };
+
   static render(publisher: Publisher) {
     return {
       id: publisher.id,
       title: publisher.name,
-      books: BookView.renderMany(publisher.books),
+      books: publisher.books.length > 0 ? BookView.renderMany(publisher.books, true) : [],
     };
   };
 

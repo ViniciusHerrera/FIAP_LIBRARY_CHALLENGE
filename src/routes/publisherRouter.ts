@@ -3,10 +3,10 @@ import PublisherController from '../controller/publisherController';
 
 const router = Router();
 
-router.get('/publisher', PublisherController.getAllPublishers);
-router.get('/publisher/:id', PublisherController.getPublisherById);
-router.post('/publisher', PublisherController.createPublisher);
-router.put('/publisher/:id', PublisherController.updatePublisher);
-router.delete('/publisher/:id', PublisherController.deletePublisher);
+router.get('/publishers', PublisherController.getAllPublishers);
+router.get('/publishers/:id', PublisherController.getPublisherById);
+router.post('/publishers', PublisherController.createPublisher);
+router.put('/publishers/:id', PublisherController.updatePublisher);
+router.delete('/publishers/:id', PublisherController.deletePublisher);
 
 export default router;
