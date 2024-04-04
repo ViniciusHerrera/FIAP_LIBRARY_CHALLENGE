@@ -70,7 +70,10 @@ class PublisherController {
     try {
       const publisherRepository = AppDataSource.getRepository(Publisher);
 
-      const publisher = await publisherRepository.findOneBy({ id: parseInt(id) });
+      const publisher = await publisherRepository.findOne({
+        relations: ['books'],
+        where: { id: parseInt(id) }
+      });
 
       if (!publisher) {
         return res.status(404).json({ message: 'Editora não encontrada' });

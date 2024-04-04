@@ -12,7 +12,9 @@ class BookController {
     try {
       const bookRepository = AppDataSource.getRepository(Book);
 
-      const books = await bookRepository.find();
+      const books = await bookRepository.find({ // O método find quando não tem condição, lista tudo
+        relations: ['publisher']
+      });
 
       return res.json(BookView.renderMany(books));
 
@@ -27,7 +29,10 @@ class BookController {
     try {
       const bookRepository = AppDataSource.getRepository(Book);
 
-      const book = await bookRepository.findOneBy({ id: parseInt(id) });
+      const book = await bookRepository.findOne({
+        relations: ['publisher'],
+        where: { id: parseInt(id) }
+      });
 
       if (!book) {
         return res.status(404).json({ message: 'Livro não encontrado' });
@@ -74,7 +79,10 @@ class BookController {
     try {
       const bookRepository = AppDataSource.getRepository(Book);
 
-      const book = await bookRepository.findOneBy({ id: parseInt(id) });
+      let book = await bookRepository.findOne({
+        relations: ['publisher'],
+        where: { id: parseInt(id) }
+      });
 
       if (!book) {
         return res.status(404).json({ message: 'Livro não encontrado' });
@@ -100,7 +108,14 @@ class BookController {
 
       await bookRepository.save(book);
 
-      return res.json(BookView.render(book));
+      book = await bookRepository.findOne({
+        relations: ['publisher'],
+        where: { id: parseInt(id) }
+      });
+
+      if (book) {
+        return res.json(BookView.render(book));
+      }
     } catch (err: any) {
       return res.status(400).json({ message: err.message });
     }
