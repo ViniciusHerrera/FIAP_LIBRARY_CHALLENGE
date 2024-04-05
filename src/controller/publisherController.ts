@@ -15,7 +15,7 @@ class PublisherController {
         relations: ['books']
       });
 
-      if (!publishers)
+      if (publishers.length > 0)
         return res.json(PublisherView.renderMany(publishers));
       else
         return res.status(404).json({ message: "Nada Encontrado" });
