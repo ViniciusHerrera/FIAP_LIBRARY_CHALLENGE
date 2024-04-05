@@ -15,7 +15,10 @@ class PublisherController {
         relations: ['books']
       });
 
-      return res.json(PublisherView.renderMany(publishers));
+      if (!publishers)
+        return res.json(PublisherView.renderMany(publishers));
+      else
+        return res.status(404).json({ message: "Nada Encontrado" });
 
     } catch (err: any) {
       return res.status(500).json({ message: err.message });
